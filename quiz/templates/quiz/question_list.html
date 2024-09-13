@@ -74,7 +74,6 @@
                 } else {
                     clearInterval(countdownTimer);
 
-                    // Attach selected answers to the form before submitting
                     const form = document.getElementById('quizForm');
                     Object.keys(selectedAnswers).forEach(questionId => {
                         const input = document.createElement('input');
@@ -92,13 +91,12 @@
                         allowOutsideClick: false
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            document.getElementById('quizForm').submit();  // Automatically submit the form when time runs out
+                            document.getElementById('quizForm').submit();  
                         }
                     });
                 }
             }, 1000);  // 1000 milliseconds = 1 second
 
-            // Event listener for all buttons
             document.querySelectorAll('button[data-question]').forEach(button => {
                 button.addEventListener('click', function () {
                     const questionId = this.getAttribute('data-question');
@@ -108,7 +106,6 @@
                     // Store selected answer for this question
                     selectedAnswers[questionId] = answerId;
                     
-                    // Disable all buttons for the question after one selection
                     const buttons = document.querySelectorAll(`button[data-question='${questionId}']`);
                     buttons.forEach(btn => btn.disabled = true);
                     
@@ -123,16 +120,15 @@
                     // Highlight the clicked button as red if incorrect
                     if (!isCorrect) {
                         this.classList.remove('btn-outline-primary');
-                        this.classList.add('btn-danger'); // Red for wrong answer
-                        wrongSound.play(); // Play incorrect sound
+                        this.classList.add('btn-danger'); 
+                        wrongSound.play(); 
                     }
                     else {
-                        correctSound.play(); // Play correct sound
+                        correctSound.play(); 
                     }
                 });
             });
 
-            // Attach selected answers to the form on submit
             document.getElementById('quizForm').addEventListener('submit', function (event) {
                 Object.keys(selectedAnswers).forEach(questionId => {
                     const input = document.createElement('input');
