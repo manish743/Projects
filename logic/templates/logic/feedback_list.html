@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback System</title>
+</head>
+<body>
+    <h1>Feedbacks</h1>
+    {% for feedback in feedbacks %}
+        <li><a href="{% url 'feedback_detail' feedback.pk %}">{{feedback.title}}</a></li>
+    {% endfor %}
+</body>
+</html>

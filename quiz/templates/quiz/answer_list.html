@@ -1,0 +1,11 @@
+{% extends 'quiz/base.html' %}
+{% load bootstrap5 %}
+
+{% block content %}
+    <h1>{{ question.question }}</h1>
+    <ul>
+    {% for answer in answers %}
+        <li>{{ answer.answer }} {% if answer.is_correct %}(Correct){% endif %}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

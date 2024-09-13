@@ -1,0 +1,147 @@
+{% extends 'quiz/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center min-vh-100" style="font-family: 'Montserrat', 'sans-serif';">
+        <div class="w-50">
+            
+            <div class="text-center mb-4">
+                <h4 id="timer" style="color: #fff;">Time Left: 
+                    <!-- <span class="timer-span">59s</span> -->
+                    <span class="timer-span">{{ total_time }}s</span>
+                </h4>
+            </div>
+
+            <h2 class="text-center mb-4" style="color: #fff;">Questions in {{ category.category }}</h2>
+            <form method="post" id="quizForm">
+            {% csrf_token %}
+            <input type="hidden" name="category_id" value="{{ category.id }}">
+            {% for question in questions %}
+                <div class="card mb-4 shadow" style="background-color: #faedcd; color: #000; border-radius: 15px;">
+                  <div class="card-body">
+                    <h5 class="card-title text-center">{{question.question}}</h5>
+
+                    <div class="row text-center mt-3">
+                        {% for answer in question.question_answers.all %}
+                        <div class="col-md-6 mb-3">
+                            <button type="button" class="btn btn-outline-primary btn-block w-100 d-flex justify-content-between align-items-center"
+                            data-correct="{{answer.is_correct}}"
+                            data-question="{{question.id}}"
+                            data-answer="{{answer.id}}">
+                                <span class="mr-2 d-flex justify-content-center align-items-center"
+                                style="background: yellowgreen; color: white; border-radius: 50%; width: 30px; height: 30px;">
+                                    {% if forloop.counter == 1 %} a
+                                    {% elif forloop.counter == 2 %} b
+                                    {% elif forloop.counter == 3 %} c
+                                    {% elif forloop.counter == 4 %} d
+                                    {% endif %}
+                                </span>
+                                <span class="mx-auto"><b>{{answer.answer}}</b></span>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                  </div>
+                </div>
+            {% endfor %}
+            <div class="text-center">
+                <button type="submit" class="btn-submit">Submit</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let selectedAnswers = {};
+            // let countdown = 59;
+            let countdown = {{total_time}};
+
+            // Load correct and incorrect sound files
+            const correctSound = new Audio("{% static 'sounds/correct-sound.mp3' %}");
+            const wrongSound = new Audio("{% static 'sounds/wrong-sound.mp3' %}");
+            // const timerElement = document.getElementById('timer');
+            const timerSpanElement = document.querySelector('.timer-span');
+
+            // Countdown timer logic
+            const countdownTimer = setInterval(function () {
+                if (countdown > 0) {
+                    // timerElement.innerText = `Time Left: ${countdown}s`;
+                    timerSpanElement.innerText = `${countdown}s`;
+                    countdown--;
+                } else {
+                    clearInterval(countdownTimer);
+
+                    // Attach selected answers to the form before submitting
+                    const form = document.getElementById('quizForm');
+                    Object.keys(selectedAnswers).forEach(questionId => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = `question_${questionId}`;
+                        input.value = selectedAnswers[questionId];
+                        form.appendChild(input);
+                    });
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Time is up!',
+                        text: 'Your quiz will be submitted now.',
+                        confirmButtonText: 'Submit',
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('quizForm').submit();  // Automatically submit the form when time runs out
+                        }
+                    });
+                }
+            }, 1000);  // 1000 milliseconds = 1 second
+
+            // Event listener for all buttons
+            document.querySelectorAll('button[data-question]').forEach(button => {
+                button.addEventListener('click', function () {
+                    const questionId = this.getAttribute('data-question');
+                    const answerId = this.getAttribute('data-answer');
+                    const isCorrect = this.getAttribute('data-correct') === 'True'; // Check if answer is correct
+                    
+                    // Store selected answer for this question
+                    selectedAnswers[questionId] = answerId;
+                    
+                    // Disable all buttons for the question after one selection
+                    const buttons = document.querySelectorAll(`button[data-question='${questionId}']`);
+                    buttons.forEach(btn => btn.disabled = true);
+                    
+                    // Highlight the correct answer
+                    buttons.forEach(btn => {
+                        if (btn.getAttribute('data-correct') === 'True') {
+                            btn.classList.remove('btn-outline-primary');
+                            btn.classList.add('btn-success');  // Green for correct answer
+                        }
+                    });
+                    
+                    // Highlight the clicked button as red if incorrect
+                    if (!isCorrect) {
+                        this.classList.remove('btn-outline-primary');
+                        this.classList.add('btn-danger'); // Red for wrong answer
+                        wrongSound.play(); // Play incorrect sound
+                    }
+                    else {
+                        correctSound.play(); // Play correct sound
+                    }
+                });
+            });
+
+            // Attach selected answers to the form on submit
+            document.getElementById('quizForm').addEventListener('submit', function (event) {
+                Object.keys(selectedAnswers).forEach(questionId => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = `question_${questionId}`;
+                    input.value = selectedAnswers[questionId];
+                    this.appendChild(input);
+                });
+            });
+        });
+    </script>
+{% endblock %}

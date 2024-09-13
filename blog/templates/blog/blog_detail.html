@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{blog.name}} Detail</title>
+</head>
+<body>
+    <h1>{{blog.name}} - Blog </h1>
+    <div>
+        <img src="{{blog.image}}" alt="{{blog.name}}" width="200px">
+    </div>
+    <h2>{{blog.name}}</h2>
+    <p>{{blog.description}}</p>
+    <a href="{% url 'edit_blog' blog.pk %}">Edit</a>
+    <a href="{% url 'delete_blog' blog.pk %}">Delete</a>
+    <a href="{% url 'blog_list' %}">Back to Home Page</a>
+</body>
+</html>
