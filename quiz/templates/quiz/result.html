@@ -33,13 +33,15 @@
         <div class="card text-center" style="width: 18rem;">
             <div class="card-body">
                 {% if correct_answers == total_questions %}
+                    <img src="{% static 'images/winner.png' %}" alt="Winner" style="width: 100px; height: 100px; margin-bottom: 10px; object-fit: cover;">
                     <h5 class="card-title" style="font-weight: bolder; color: green;">Congratulations!</h5>
                     <p class="card-text">You answered all the questions correctly!</p>
                 {% elif correct_answers == 0 %}
+                    <img src="{% static 'images/looser.png' %}" alt="Failed" style="width: 100px; height: 100px; margin-bottom: 10px; object-fit: cover;">
                     <h5 class="card-title" style="font-weight: bolder; color: red;">Oops! Better luck next time!</h5>
                     <p class="card-text">You didn't get any answers correct.</p>
                 {% else %}
-                    <img src="{% static 'images/game-over.png' %}" alt="Profile" style="width: 100px; height: 100px; margin-bottom: 10px; object-fit: cover;">
+                    <img src="{% static 'images/game-over.png' %}" alt="Try Again" style="width: 100px; height: 100px; margin-bottom: 10px; object-fit: cover;">
                     <h5 class="card-title" style="font-weight: bolder; margin-top: 20px;">Game Over! Try other <br>categories!!</h5>
                 {% endif %}
                 <div class="result" style="margin: 16px 0;">

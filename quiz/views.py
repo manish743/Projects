@@ -34,10 +34,9 @@ def category_list(request):
             'total_reward': total_reward,
         })
 
-         # total stars earned by the user
-    if request.user.is_authenticated:    
+    # total stars earned by the user
+    if request.user.is_authenticated:
         total_stars = Result.objects.filter(user=request.user).aggregate(total_stars=Sum('stars_earned'))['total_stars'] or 0
-
 
     return render(request, template_name="quiz/quiz_category.html", context={
         'categories' : categories,
@@ -88,8 +87,16 @@ def question_list(request):
         # Calculating the user's score
         score = (correct_answers / total_questions) * 100
 
-        stars = "⭐" * correct_answers
-        points = 10 * correct_answers
+        # Change starts
+        if correct_answers == total_questions:
+            stars = "⭐" * (correct_answers + 1)
+            points = 10 * (correct_answers + 1)
+        else:
+            stars = "⭐" * correct_answers
+            points = 10 * correct_answers
+        # Change ends
+        # stars = "⭐" * correct_answers
+        # points = 10 * correct_answers
 
         # Render the result page with  user's score
         return render(request, 'quiz/result.html', {
