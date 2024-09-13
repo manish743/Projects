@@ -37,7 +37,7 @@
                     <h5 class="card-title" style="font-weight: bolder; color: green;">Congratulations!</h5>
                     <p class="card-text">You answered all the questions correctly!</p>
                 {% elif correct_answers == 0 %}
-                    <img src="{% static 'images/looser.png' %}" alt="Failed" style="width: 100px; height: 100px; margin-bottom: 10px; object-fit: cover;">
+                    <img src="{% static 'images/loser.png' %}" alt="Failed" style="width: 100px; height: 100px; margin-bottom: 10px; object-fit: cover;">
                     <h5 class="card-title" style="font-weight: bolder; color: red;">Oops! Better luck next time!</h5>
                     <p class="card-text">You didn't get any answers correct.</p>
                 {% else %}
@@ -48,11 +48,14 @@
                     <p class="card-text">Your Score: <b>{{score}}%</b></p>
                     <p class="card-text">Correct Answer: <b>{{correct_answers}}/{{total_questions}}</b></p>
                     <p class="card-text">Time Spent : <b>{{time_spent}}sec</b></p>
+                    {% if correct_answers != 0 %}
                     <p class="card-text">
                         Quiz Stars Received: 
-                        <span style="color: gold;">{{ stars }}</span>
+                        <!-- <span style="color: gold;">{{ stars }}</span> -->   <!--This code will display the total stars according to questions obtained-->
+                        <span style="color: gold;">⭐</span>
                         <b>{{ points }}</b>
                     </p>
+                    {% endif %}
                 </div>
             <!-- <p class="card-text">You answered {{ correct_answers }} out of {{ total_questions }} questions correctly.</p> -->
             <a href="{% url 'categories' %}" class="btn btn-primary orange">Take Another Quiz</a>

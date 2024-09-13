@@ -42,7 +42,7 @@ def category_list(request):
         'categories' : categories,
         'category_data' :category_data,
         'username': request.user.username,
-        'total_stars': total_stars
+        'total_stars': total_stars,
     })
 
 @login_required
@@ -88,15 +88,16 @@ def question_list(request):
         score = (correct_answers / total_questions) * 100
 
         # Change starts
-        if correct_answers == total_questions:
-            stars = "⭐" * (correct_answers + 1)
-            points = 10 * (correct_answers + 1)
-        else:
-            stars = "⭐" * correct_answers
-            points = 10 * correct_answers
+        # Calculating bonus stars for perfect score
+        # if correct_answers == total_questions:
+        #     stars = "⭐" * (correct_answers + 1)
+        #     points = 10 * (correct_answers + 1)
+        # else:
+        #     stars = "⭐" * correct_answers
+        #     points = 10 * correct_answers
         # Change ends
-        # stars = "⭐" * correct_answers
-        # points = 10 * correct_answers
+        stars = "⭐" * correct_answers
+        points = 10 * correct_answers
 
         # Render the result page with  user's score
         return render(request, 'quiz/result.html', {
